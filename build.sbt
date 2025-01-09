@@ -1,10 +1,7 @@
-name := "MatrixMultiply"
+organization := "edu.berkeley.cs"
 
-version := "1.6"
+version := "1.0"
 
-scalaVersion := "2.13.10"  // Chisel 3.5.x 兼容的 Scala 版本
+name := "yourproject"
 
-libraryDependencies ++= Seq(
-  "edu.berkeley.cs" %% "chisel3" % "3.5.0",
-  "edu.berkeley.cs" %% "chiseltest" % "0.5.0" % "test"
-)
+scalaVersion := "2.12.4"
