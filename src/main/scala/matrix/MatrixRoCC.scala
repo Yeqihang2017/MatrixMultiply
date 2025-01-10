@@ -14,6 +14,10 @@ class MatrixRoCC(implicit p: Parameters) extends LazyRoCC {
     io.cmd.ready := !multiplier.io.busy
     multiplier.io.start := io.cmd.fire()
 
+    // 解析指令
+    val rs1 = io.cmd.bits.rs1
+    val rs2 = io.cmd.bits.rs2
+
     // 将输入数据传递给矩阵乘法模块
     for (i <- 0 until 4) {
       for (j <- 0 until 4) {
