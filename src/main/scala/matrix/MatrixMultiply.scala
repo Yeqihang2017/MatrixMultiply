@@ -12,21 +12,14 @@ class MatrixMultiply(val dim: Int, val dataWidth: Int) extends Module {
     val done = Output(Bool())
   })
 
-  val result = Reg(Vec(dim, Vec(dim, SInt((2 * dataWidth).W))))
-  val busy = RegInit(false.B)
-
-  when (io.start && !busy) {
-    for (i <- 0 until dim) {
-      for (j <- 0 until dim) {
-        result(i)(j) := 0.S
-        for (k <- 0 until dim) {
-          result(i)(j) := result(i)(j) + io.inA(i)(k) * io.inB(k)(j)
-        }
-      }
-    }
-    busy := true.B
+  // 组合逻辑计算
+  val result = Reg(Vec(dim, Vec(dim, SInt((2*dataWidth).W))))
+  for (i <- 0 until dim; j <- 0 until dim) {
+    result(i)(j) := (0 until dim).map(k => io.inA(i)(k) * io.inB(k)(j)).reduce(_ +& _)
   }
 
+  // 控制信号
+  val done = RegNext(io.start, false.B)
   io.out := result
-  io.done := busy
+  io.done := done
 }
