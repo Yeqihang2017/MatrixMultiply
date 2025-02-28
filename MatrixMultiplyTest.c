@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "rocc.h"
+#include "encoding.h"
 
 #define DIM 4
 
@@ -61,6 +62,7 @@ void print_matrix(const char* name, int64_t mat[DIM][DIM]) {
     }
 }
 
+
 int main() {
     int32_t A[DIM][DIM] = {
         {1, 2, 3, 4},
@@ -77,13 +79,20 @@ int main() {
     };
 
     int64_t C_soft[DIM][DIM], C_hard[DIM][DIM];
+    unsigned long  start, end;
+
+    start = rdcycle();
     matrix_mult_soft(A, B, C_soft);
+    end = rdcycle();
+    printf("Software calculation completed. Average time used: %lu \n\n", (end - start));
     
+    start = rdcycle();
     load_matrixA(A);
     load_matrixB(B);
     ROCC_INSTRUCTION(0, 2); // custom0, funct=2触发计算
-    
     get_hard_result(C_hard);
+    end = rdcycle();
+    printf("Hardware calculation completed. Average time used: %lu \n\n", (end - start));
     
     // 验证结果
     int errors = 0;
